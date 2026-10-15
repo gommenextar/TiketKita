@@ -1,0 +1,113 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#9CAEA9">
+    <title>TiketKita — Your Journey Starts Here</title>
+    <link rel="stylesheet" href="{% static 'tickets/style.css' %}">
+    <script src="{% static 'tickets/script.js' %}" defer></script>
+</head>
+
+<body>
+    <header class="navbar">
+        <a class="brand" href="/" aria-label="TiketKita home">
+            Tiket<span>Kita</span>
+        </a>
+        <div class="nav-label">Your next adventure starts here</div>
+        <div class="nav-tag">✈ Flight Tickets</div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <div class="eyebrow">DISCOVER SOMEWHERE NEW</div>
+            <h1>Your next journey starts with a single search.</h1>
+            <p>
+                Explore destinations, compare ticket prices, and find
+                a journey that fits your budget with TiketKita.
+            </p>
+        </div>
+    </section>
+
+    <section class="search-panel">
+        <h2 class="search-heading">Where would you like to go?</h2>
+
+        <form id="searchForm" class="search-row">
+            <div class="field">
+                <label for="destination">DESTINATION</label>
+                <div class="input-wrap">
+                    <span aria-hidden="true">⌖</span>
+                    <input
+                        id="destination"
+                        name="destination"
+                        type="text"
+                        placeholder="Try Bali or Surabaya"
+                        autocomplete="off"
+                    >
+                </div>
+            </div>
+
+            <button class="primary-button" type="submit">
+                Search Tickets →
+            </button>
+        </form>
+    </section>
+
+    <main class="content">
+        <div class="section-heading">
+            <div>
+                <h2 id="resultsHeading">Explore destinations</h2>
+                <p id="resultsSubtitle">
+                    Find a destination that matches your budget.
+                </p>
+            </div>
+
+            <button id="sortButton" class="sort-button" type="button">
+                ↕ Sort: Cheapest first
+            </button>
+        </div>
+
+        <section
+            id="ticketGrid"
+            class="ticket-grid"
+            aria-live="polite"
+            aria-busy="true"
+        >
+            <div class="empty-state">
+                <div class="empty-icon">✈</div>
+                <h3>Finding your tickets...</h3>
+                <p>Please wait a moment.</p>
+            </div>
+        </section>
+
+        <p id="status" class="status" role="status"></p>
+
+        <section class="algorithm-area">
+            <button
+                id="toggleLog"
+                class="log-toggle"
+                type="button"
+                aria-expanded="false"
+                aria-controls="logContainer"
+            >
+                <span>Algorithm demonstration</span>
+                <span id="toggleLogLabel">Show algorithm log ＋</span>
+            </button>
+
+            <div id="logContainer" hidden>
+                <p class="status">
+                    See the steps performed by the C++ algorithm.
+                </p>
+                <pre id="log">Run a search or sort to see the log.</pre>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <strong>TiketKita</strong>
+        <span> · A student ticket-booking website project</span>
+    </footer>
+</body>
+</html>
