@@ -18,18 +18,26 @@ def home(request):
 def ticket_api(request):
     action = request.GET.get("action", "sort")
     destination = request.GET.get("destination", "")
+    airline = request.GET.get("airline", "")
 
     if action not in ("sort", "search"):
         return JsonResponse({"error": "Invalid action"}, status=400)
 
     command = [str(CPP_PROGRAM), action]
 
-    if action == "search":
-        if not destination.strip():
-            return JsonResponse(
-                {"error": "Destination is required"}, status=400
-            )
-        command.append(destination.strip())
+    destination = destination.strip()
+    airline = airline.strip()
+
+    if action == "search" and not destination and not airline:
+        return JsonResponse(
+            {"error": "Enter a destination or airline to search."},
+            status=400,
+        )
+
+    if destination:
+        command.extend(["--destination", destination])
+    if airline:
+        command.extend(["--airline", airline])
 
     try:
         result = subprocess.run(

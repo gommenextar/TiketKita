@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cctype>
 #include <limits>
+#include <vector>
 using namespace std;
 
 struct Ticket {
@@ -108,37 +109,48 @@ void bubbleSort(Ticket* data, int size, string& log) {
     log += "Sorting complete.";
 }
 
-void linearSearch(Ticket* data, int size, string target,
-                  string& log, int& foundIndex) {
-    foundIndex = -1;
-    log += "Linear Search: " + target + "\\n";
-
-    string wanted = target;
-    transform(wanted.begin(), wanted.end(), wanted.begin(),
+string lowercase(string value) {
+    transform(value.begin(), value.end(), value.begin(),
               [](unsigned char c) { return tolower(c); });
+    return value;
+}
+
+void linearSearch(Ticket* data, int size, const string& destination,
+                  const string& airline, string& log,
+                  vector<int>& matchingIndices) {
+    log += "Linear Search:";
+    if (!destination.empty()) log += " destination \"" + destination + "\"";
+    if (!airline.empty()) log += " airline \"" + airline + "\"";
+    log += "\\n";
 
     for (int i = 0; i < size; i++) {
-        string current = data[i].destination;
-        transform(current.begin(), current.end(), current.begin(),
-                  [](unsigned char c) { return tolower(c); });
+        bool destinationMatches = destination.empty() ||
+            lowercase(data[i].destination) == lowercase(destination);
+        bool airlineMatches = airline.empty() ||
+            lowercase(data[i].airline).find(lowercase(airline)) != string::npos;
 
         log += "Step " + to_string(i + 1) + ": Check " +
-               data[i].destination;
-
-        if (current == wanted) {
-            foundIndex = i;
+               data[i].airline + " to " + data[i].destination;
+        if (destinationMatches && airlineMatches) {
+            matchingIndices.push_back(i);
             log += " -> MATCH FOUND\\n";
-            return;
+        } else {
+            log += " -> No match\\n";
         }
-        log += " -> No match\\n";
     }
 
-    log += "No matching destination found.";
+    if (matchingIndices.empty()) {
+        log += "No matching tickets found.";
+    } else {
+        log += "Search complete: " + to_string(matchingIndices.size()) +
+               " matching ticket(s).";
+    }
 }
 
 int main(int argc, char* argv[]) {
     if (argc < 2) {
-        cerr << "Usage: algorithms.exe sort | search DESTINATION\n";
+        cerr << "Usage: algorithms.exe sort | search [--destination DESTINATION] "
+             << "[--airline AIRLINE]\n";
         return 1;
     }
 
@@ -147,19 +159,39 @@ int main(int argc, char* argv[]) {
     copy(tickets, tickets + SIZE, data);
 
     string log;
-    int foundIndex = -1;
+    string destination;
+    string airline;
+    vector<int> matchingIndices;
+
+    for (int i = 2; i < argc; i++) {
+        string option = argv[i];
+        if ((option == "--destination" || option == "--airline") &&
+            i + 1 < argc) {
+            string value = argv[++i];
+            if (option == "--destination") {
+                destination = value;
+            } else {
+                airline = value;
+            }
+        } else {
+            cerr << "Invalid search option.\n";
+            return 1;
+        }
+    }
 
     if (action == "sort") {
         bubbleSort(data, SIZE, log);
-    } else if (action == "search" && argc >= 3) {
-        string target = argv[2];
-        for (int i = 3; i < argc; i++) {
-            target += " ";
-            target += argv[i];
+        if (!destination.empty() || !airline.empty()) {
+            linearSearch(data, SIZE, destination, airline, log, matchingIndices);
         }
-        linearSearch(data, SIZE, target, log, foundIndex);
+    } else if (action == "search") {
+        if (destination.empty() && airline.empty()) {
+            cerr << "Search requires a destination or airline.\n";
+            return 1;
+        }
+        linearSearch(data, SIZE, destination, airline, log, matchingIndices);
     } else {
-        cerr << "Invalid action or missing destination.\n";
+        cerr << "Invalid action or missing search filters.\n";
         return 1;
     }
 
@@ -168,8 +200,13 @@ int main(int argc, char* argv[]) {
         if (i > 0) cout << ",";
         cout << ticketJson(data[i]);
     }
-    cout << "],\"log\":\"" << jsonEscape(log)
-         << "\",\"found_index\":" << foundIndex << "}\n";
+    cout << "],\"log\":\"" << jsonEscape(log) << "\",\"matching_indices\":[";
+    for (size_t i = 0; i < matchingIndices.size(); i++) {
+        if (i > 0) cout << ",";
+        cout << matchingIndices[i];
+    }
+    cout << "],\"found_index\":";
+    cout << (matchingIndices.empty() ? -1 : matchingIndices[0]) << "}\n";
 
     return 0;
 }

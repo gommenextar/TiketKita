@@ -4,6 +4,8 @@ const statusElement = document.getElementById("status");
 const logElement = document.getElementById("log");
 const searchForm = document.getElementById("searchForm");
 const destinationInput = document.getElementById("destination");
+const airlineInput = document.getElementById("airline");
+const resetSearchButton = document.getElementById("resetSearch");
 const resultsHeading = document.getElementById("resultsHeading");
 const resultsSubtitle = document.getElementById("resultsSubtitle");
 const sortButton = document.getElementById("sortButton");
@@ -130,28 +132,42 @@ function renderTickets(tickets) {
 
 async function runAlgorithm(action) {
     const destination = destinationInput.value.trim();
+    const airline = airlineInput.value.trim();
     const params = new URLSearchParams({ action });
+    const hasFilters = Boolean(destination || airline);
 
     if (action === "search") {
-        if (!destination) {
+        if (!hasFilters) {
             resultsHeading.textContent = "Explore destinations";
             resultsSubtitle.textContent =
-                "Enter a destination to find a ticket.";
+                "Enter a destination or airline to find tickets.";
             statusElement.textContent =
-                "Please enter a destination first.";
-            destinationInput.focus();
+                "Please enter a destination or airline first.";
+            (destinationInput.value ? airlineInput : destinationInput).focus();
             return;
         }
+    }
 
-        params.set("destination", destination);
+    if (destination) params.set("destination", destination);
+    if (airline) params.set("airline", airline);
 
-        resultsHeading.textContent = "Search results";
+    if (hasFilters) {
+        const filters = [];
+        if (destination) filters.push(`destination "${destination}"`);
+        if (airline) filters.push(`airline "${airline}"`);
+        resultsHeading.textContent =
+            action === "sort" ? "Sorted search results" : "Search results";
         resultsSubtitle.textContent =
-            `Showing tickets matching "${destination}".`;
+            `Showing tickets for ${filters.join(" and ")}` +
+            (action === "sort"
+                ? ", sorted from cheapest to most expensive."
+                : ".");
     } else {
         resultsHeading.textContent = "Explore destinations";
         resultsSubtitle.textContent =
-            "Tickets sorted from cheapest to most expensive.";
+            action === "sort"
+                ? "Tickets sorted from cheapest to most expensive."
+                : "Find a destination that matches your budget.";
     }
 
     ticketGrid.setAttribute("aria-busy", "true");
@@ -179,13 +195,9 @@ async function runAlgorithm(action) {
             );
         }
 
-        let displayedTickets = data.tickets;
-
-        if (action === "search") {
-            displayedTickets = data.found_index >= 0
-                ? [data.tickets[data.found_index]]
-                : [];
-        }
+        const displayedTickets = hasFilters
+            ? data.matching_indices.map(index => data.tickets[index])
+            : data.tickets;
 
         renderTickets(displayedTickets);
         logElement.textContent = data.log;
@@ -221,6 +233,11 @@ async function runAlgorithm(action) {
 searchForm.addEventListener("submit", event => {
     event.preventDefault();
     runAlgorithm("search");
+});
+
+resetSearchButton.addEventListener("click", () => {
+    searchForm.reset();
+    runAlgorithm("sort");
 });
 
 sortButton.addEventListener("click", () => {

@@ -8,7 +8,8 @@ TiketKita combines a Django web application with C++ sorting and searching algor
 
 - **Ticket Listing:** Displays sample airline tickets and their prices.
 - **Ticket Sorting:** Uses Bubble Sort to arrange tickets from cheapest to most expensive.
-- **Destination Search:** Uses Linear Search to find tickets by destination.
+- **Ticket Search:** Uses Linear Search to find tickets by destination, airline, or both, and displays every match.
+- **Reset Search:** Clears search filters and restores the full ticket list.
 - **Algorithm Logs:** Displays the steps performed by the sorting and searching algorithms.
 - **Interactive Web Interface:** Built with Django, HTML, CSS, and JavaScript.
 - **C++ Integration:** Executes the sorting and searching algorithms through the Django backend.
@@ -267,10 +268,11 @@ Keep the terminal running while using the website. Press `Ctrl + C` to stop the 
 ## How to Use TiketKita
 
 1. **View Tickets:** Open the homepage to see the available sample tickets.
-2. **Search for a Destination:** Enter a destination, such as `Surabaya` or `Bali`, and click the search button to find a matching ticket.
-3. **Sort Tickets:** Click the sorting button to arrange tickets from the lowest price to the highest price.
-4. **View Algorithm Logs:** Open the algorithm log panel to inspect the steps performed by the C++ sorting or searching algorithm.
-5. **Select a Ticket:** Click the ticket selection button to see the demonstration message.
+2. **Search Tickets:** Enter a destination, such as `Surabaya`, an airline, such as `AirAsia`, or both; all matching tickets are displayed.
+3. **Reset Search:** Click **Reset** to clear the filters and restore all tickets.
+4. **Sort Tickets:** Click the sorting button to arrange tickets from the lowest price to the highest price.
+5. **View Algorithm Logs:** Open the algorithm log panel to inspect the steps performed by the C++ sorting or searching algorithm.
+6. **Select a Ticket:** Click the ticket selection button to see the demonstration message.
 
 The ticket selection feature is for demonstration only. The application does not make real bookings.
 
@@ -288,7 +290,7 @@ The application displays the sorting process through an algorithm log.
 
 ### Linear Search
 
-Linear Search checks tickets one by one until it finds a matching destination or reaches the end of the list.
+Linear Search checks every ticket and returns those matching the destination and/or airline filters.
 
 - Average time complexity: O(n)
 - Worst-case time complexity: O(n)

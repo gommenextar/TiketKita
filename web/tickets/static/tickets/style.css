@@ -201,6 +201,21 @@ input:focus-visible {
     transition: background 0.2s, transform 0.2s;
 }
 
+.reset-button {
+    min-height: 52px;
+    padding: 0 18px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--white);
+    color: var(--taupe);
+    font-weight: 750;
+}
+
+.reset-button:hover {
+    background: var(--sage-light);
+    color: var(--espresso);
+}
+
 .primary-button:hover {
     background: var(--mist);
     transform: translateY(-1px);
