@@ -1,0 +1,73 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#687D76">
+    <meta name="description" content="{% block description %}Compare sample flights, trains, ships, and hotels with TiketKita.{% endblock %}">
+    <title>{% block title %}TiketKita — Plan your next trip{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'tickets/style.css' %}">
+    {% block head %}{% endblock %}
+</head>
+
+<body class="bg-body-tertiary" {% block body_attributes %}{% endblock %}>
+    <header>
+        <nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top site-navbar">
+            <div class="container">
+                <a class="navbar-brand brand" href="{% url 'home' %}" aria-label="TiketKita home">
+                    Tiket<span>Kita</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#mainNavigation" aria-controls="mainNavigation"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="mainNavigation">
+                    <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
+                        <li class="nav-item">
+                            <a class="nav-link {% if mode == 'flight' %}active{% endif %}"
+                                {% if mode == "flight" %}aria-current="page"{% endif %}
+                                href="{% url 'flights' %}">Flights</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if mode == 'train' %}active{% endif %}"
+                                {% if mode == "train" %}aria-current="page"{% endif %}
+                                href="{% url 'trains' %}">Trains</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if mode == 'ship' %}active{% endif %}"
+                                {% if mode == "ship" %}aria-current="page"{% endif %}
+                                href="{% url 'ships' %}">Ships</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if mode == 'hotel' %}active{% endif %}"
+                                {% if mode == "hotel" %}aria-current="page"{% endif %}
+                                href="{% url 'hotels' %}">Hotels</a>
+                        </li>
+                    </ul>
+                    <span class="badge rounded-pill text-bg-light border ms-lg-3 mt-2 mt-lg-0">
+                        {% if page %}{{ page.label }}{% else %}TRAVEL YOUR WAY{% endif %}
+                    </span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    {% block content %}{% endblock %}
+
+    <footer class="border-top bg-white py-4 text-center text-secondary small">
+        <strong class="text-primary-emphasis">TiketKita</strong>
+        <span> · Sample travel listings for a student project</span>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

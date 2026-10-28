@@ -1,0 +1,94 @@
+{% extends "tickets/base.html" %}
+
+{% block title %}TiketKita — Plan your next trip{% endblock %}
+{% block description %}Compare sample flight, train, ship, and hotel listings with TiketKita.{% endblock %}
+
+{% block content %}
+<main>
+    <section class="landing-hero">
+        <div class="container landing-hero-content">
+            <div class="row align-items-center min-vh-50">
+                <div class="col-lg-7 py-5">
+                    <p class="eyebrow text-uppercase">A little inspiration for your next trip</p>
+                    <h1>Good journeys start with a choice.</h1>
+                    <p class="landing-intro">
+                        Compare routes, schedules, durations, and sample fares, then
+                        choose the way you want to get there.
+                    </p>
+                    <a class="btn btn-primary btn-lg rounded-pill landing-cta" href="#travel-modes">
+                        Explore travel options <span aria-hidden="true">↓</span>
+                    </a>
+                    <p class="landing-note">A simple way to explore your options, all in one place.</p>
+                </div>
+                <div class="col-lg-5 d-none d-lg-block">
+                    <div class="landing-hero-art position-relative" aria-hidden="true">
+                        <div class="landing-sun"></div>
+                        <div class="landing-route">✈　·　·　·　·　·</div>
+                        <div class="landing-landscape"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="travel-modes" class="container py-5">
+        <div class="mb-4">
+            <p class="eyebrow text-uppercase mb-2">Find your way</p>
+            <h2 class="h2 fw-bold">How would you like to travel?</h2>
+            <p class="text-secondary mb-0">Pick a transport type to explore routes and compare available listings.</p>
+        </div>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            <div class="col">
+                <a class="mode-card card h-100 text-decoration-none shadow-sm" href="{% url 'flights' %}">
+                    <div class="card-body d-flex flex-column align-items-start gap-3 p-4">
+                        <span class="mode-icon" aria-hidden="true">✈</span>
+                        <h3 class="h5 card-title fw-bold mb-0">By air</h3>
+                        <p class="card-text text-secondary mb-0">Browse flights, airport codes, departure times, and fares.</p>
+                        <span class="mode-arrow mt-auto align-self-end" aria-hidden="true">↗</span>
+                    </div>
+                </a>
+            </div>
+            <div class="col">
+                <a class="mode-card card h-100 text-decoration-none shadow-sm" href="{% url 'trains' %}">
+                    <div class="card-body d-flex flex-column align-items-start gap-3 p-4">
+                        <span class="mode-icon" aria-hidden="true">🚆</span>
+                        <h3 class="h5 card-title fw-bold mb-0">By rail</h3>
+                        <p class="card-text text-secondary mb-0">Explore train services, station routes, and schedules.</p>
+                        <span class="mode-arrow mt-auto align-self-end" aria-hidden="true">↗</span>
+                    </div>
+                </a>
+            </div>
+            <div class="col">
+                <a class="mode-card card h-100 text-decoration-none shadow-sm" href="{% url 'ships' %}">
+                    <div class="card-body d-flex flex-column align-items-start gap-3 p-4">
+                        <span class="mode-icon" aria-hidden="true">⛴</span>
+                        <h3 class="h5 card-title fw-bold mb-0">By sea</h3>
+                        <p class="card-text text-secondary mb-0">Compare ship and ferry routes, journey times, and fares.</p>
+                        <span class="mode-arrow mt-auto align-self-end" aria-hidden="true">↗</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="container pb-5">
+        <div class="landing-about card border-0 shadow-sm p-4 p-lg-5">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-5">
+                    <p class="eyebrow text-uppercase mb-2">Travel planning, made simple</p>
+                    <h2 class="h3 fw-bold mb-0">Get the details before you decide.</h2>
+                </div>
+                <div class="col-lg-7">
+                    <p class="text-secondary mb-0">
+                        TiketKita brings example travel listings together so you can
+                        search by route or provider and compare the details that matter.
+                        Flight results can be sorted by price, duration, or departure time.
+                        Looking for a place to stay? Browse our
+                        <a class="link-primary fw-semibold" href="{% url 'hotels' %}">hotel listings</a>, too.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}

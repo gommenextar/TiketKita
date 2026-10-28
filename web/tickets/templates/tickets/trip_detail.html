@@ -1,0 +1,85 @@
+{% extends "tickets/base.html" %}
+
+{% block title %}TiketKita — {{ ticket.origin }} to {{ ticket.destination }}{% endblock %}
+{% block description %}Trip details for {{ ticket.provider }} from {{ ticket.origin }} to {{ ticket.destination }}.{% endblock %}
+
+{% block content %}
+<main class="container trip-detail py-4 py-lg-5">
+    <a class="back-link d-inline-flex align-items-center gap-2 mb-3"
+        href="{% url mode|add:'s' %}">← Back to {{ page.title|lower }}</a>
+
+    <section class="trip-detail-card card border-0 shadow-sm">
+        <div class="card-body p-4 p-lg-5">
+            <div class="trip-detail-heading d-flex justify-content-between align-items-start gap-4">
+                <div>
+                    <p class="eyebrow text-uppercase">{{ page.label }}</p>
+                    <h1 class="display-6 fw-bold">{{ ticket.origin }} <span aria-hidden="true">→</span> {{ ticket.destination }}</h1>
+                    <p class="trip-provider mb-0">
+                        {% if mode == "flight" %}{{ ticket.provider }} / {{ ticket.number }}
+                        {% elif mode == "train" %}{{ ticket.provider }} / Train {{ ticket.number }}
+                        {% else %}{{ ticket.provider }} / {{ ticket.number }}{% endif %}
+                    </p>
+                </div>
+                <div class="trip-price text-end">
+                    <span>Ticket price</span>
+                    <strong>{{ formatted_price }}</strong>
+                    <small>per ticket</small>
+                </div>
+            </div>
+
+            <div class="trip-route">
+                <div class="trip-stop">
+                    <span class="destination-label">DEPARTURE</span>
+                    <strong>{{ ticket.departure }}</strong>
+                    <span>{{ ticket.origin }}</span>
+                    {% if ticket.origin_code %}<small>{{ ticket.origin_code }}</small>{% endif %}
+                </div>
+                <div class="trip-duration">
+                    <span>{{ ticket.duration }}</span>
+                    <div class="route-line"><span aria-hidden="true">{{ page.label|slice:":1" }}</span></div>
+                </div>
+                <div class="trip-stop">
+                    <span class="destination-label">ARRIVAL</span>
+                    <strong>{{ ticket.arrival }}</strong>
+                    <span>{{ ticket.destination }}</span>
+                    {% if ticket.destination_code %}<small>{{ ticket.destination_code }}</small>{% endif %}
+                </div>
+            </div>
+
+            <dl class="trip-detail-facts row g-3">
+                <div class="col-md-6">
+                    <div class="h-100">
+                        <dt>Transport</dt>
+                        <dd>{{ mode|title }}</dd>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="h-100">
+                        <dt>Operator</dt>
+                        <dd>{{ ticket.provider }}</dd>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="h-100">
+                        <dt>Service number</dt>
+                        <dd>{{ ticket.number }}</dd>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="h-100">
+                        <dt>Journey duration</dt>
+                        <dd>{{ ticket.duration }}</dd>
+                    </div>
+                </div>
+            </dl>
+
+            <p class="trip-demo-note text-secondary small mt-4">
+                This is a sample listing for demonstration. Booking is not available.
+            </p>
+            <a class="btn btn-primary trip-back-button" href="{% url mode|add:'s' %}">
+                Browse {{ page.title|lower }}
+            </a>
+        </div>
+    </section>
+</main>
+{% endblock %}

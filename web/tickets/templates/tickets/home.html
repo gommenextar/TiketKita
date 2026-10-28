@@ -1,130 +1,115 @@
-
+{% extends "tickets/base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#9CAEA9">
-    <title>TiketKita — Your Journey Starts Here</title>
-    <link rel="stylesheet" href="{% static 'tickets/style.css' %}">
-    <script src="{% static 'tickets/script.js' %}" defer></script>
-</head>
 
-<body>
-    <header class="navbar">
-        <a class="brand" href="/" aria-label="TiketKita home">
-            Tiket<span>Kita</span>
-        </a>
-        <div class="nav-label">Your next adventure starts here</div>
-        <div class="nav-tag">✈ Flight Tickets</div>
-    </header>
+{% block title %}TiketKita — {{ page.title }}{% endblock %}
+{% block description %}{{ page.description }}{% endblock %}
+{% block body_attributes %}data-mode="{{ mode }}"{% endblock %}
 
-    <section class="hero">
-        <div class="hero-content">
-            <div class="eyebrow">DISCOVER SOMEWHERE NEW</div>
-            <h1>Your next journey starts with a single search.</h1>
-            <p>
-                Explore destinations, compare ticket prices, and find
-                a journey that fits your budget with TiketKita.
-            </p>
+{% block content %}
+<main>
+    <section class="hero py-5">
+        <div class="container hero-content">
+            <p class="eyebrow text-uppercase mb-2">Discover somewhere new</p>
+            <h1>{{ page.headline }}</h1>
+            <p>{{ page.description }}</p>
         </div>
     </section>
 
-    <section class="search-panel">
-        <h2 class="search-heading">Where would you like to go?</h2>
-
-        <form id="searchForm" class="search-row">
-            <div class="field">
-                <label for="destination">DESTINATION</label>
+    <section class="container search-panel card border-0 shadow">
+        <h2 class="search-heading h5 fw-bold">Where would you like to go?</h2>
+        <form id="searchForm" class="row g-3 align-items-end">
+            {% if mode != "hotel" %}
+            <div class="field col-md">
+                <label for="origin" class="form-label">ORIGIN</label>
                 <div class="input-wrap">
                     <span aria-hidden="true">⌖</span>
-                    <input
-                        id="destination"
-                        name="destination"
-                        type="text"
-                        placeholder="Try Bali or Surabaya"
-                        autocomplete="off"
-                    >
+                    <input class="form-control" id="origin" name="origin" type="text"
+                        placeholder="{% if mode == 'flight' %}City or IATA code{% else %}Starting city or port{% endif %}"
+                        autocomplete="off">
                 </div>
             </div>
+            {% endif %}
 
-            <div class="field">
-                <label for="airline">AIRLINE</label>
+            <div class="field col-md">
+                <label for="destination" class="form-label">DESTINATION</label>
                 <div class="input-wrap">
-                    <span aria-hidden="true">✈</span>
-                    <input
-                        id="airline"
-                        name="airline"
-                        type="text"
-                        placeholder="Try Garuda or AirAsia"
-                        autocomplete="off"
-                    >
+                    <span aria-hidden="true">⌖</span>
+                    <input class="form-control" id="destination" name="destination" type="text"
+                        placeholder="{% if mode == 'flight' %}City or IATA code (e.g. DPS){% else %}City or destination{% endif %}"
+                        autocomplete="off">
                 </div>
             </div>
 
-            <button class="primary-button" type="submit">
-                Search Tickets →
-            </button>
-            <button id="resetSearch" class="reset-button" type="button">
-                Reset
-            </button>
+            <div class="field col-md">
+                <label for="provider" class="form-label">{{ page.provider_label }}</label>
+                <div class="input-wrap">
+                    <span aria-hidden="true">{% if mode == "flight" %}✈{% elif mode == "train" %}🚆{% elif mode == "ship" %}⛴{% else %}⌂{% endif %}</span>
+                    <input class="form-control" id="provider" name="provider" type="text"
+                        placeholder="{% if mode == 'flight' %}Try Garuda or AirAsia{% elif mode == 'hotel' %}Hotel name{% else %}Search by name{% endif %}"
+                        autocomplete="off">
+                </div>
+            </div>
+
+            <div class="col-auto">
+                <button class="btn btn-primary px-4" type="submit">Search →</button>
+            </div>
+            <div class="col-auto">
+                <button id="resetSearch" class="btn btn-outline-secondary" type="button">Reset</button>
+            </div>
         </form>
     </section>
 
-    <main class="content">
-        <div class="section-heading">
+    <section class="container content py-5">
+        <div class="section-heading d-flex flex-wrap justify-content-between align-items-end gap-3">
             <div>
-                <h2 id="resultsHeading">Explore destinations</h2>
-                <p id="resultsSubtitle">
-                    Find a destination that matches your budget.
-                </p>
+                <h2 id="resultsHeading" class="h3 fw-bold">Explore {{ page.title|lower }}</h2>
+                <p id="resultsSubtitle" class="text-secondary mb-0">Find an option that matches your budget.</p>
             </div>
-
-            <button id="sortButton" class="sort-button" type="button">
+            {% if mode != "hotel" %}
+            <label class="sort-control">
+                <span>Sort {{ page.title|lower }}</span>
+                <select id="sortOrder" class="form-select" aria-label="Sort {{ page.title|lower }}">
+                    <option value="price">Cheapest first</option>
+                    <option value="duration">Shortest duration</option>
+                    <option value="departure">Earliest departure</option>
+                </select>
+            </label>
+            {% else %}
+            <button id="sortButton" class="btn btn-outline-primary" type="button">
                 ↕ Sort: Cheapest first
             </button>
+            {% endif %}
         </div>
 
-        <section
-            id="ticketGrid"
-            class="ticket-grid"
-            aria-live="polite"
-            aria-busy="true"
-        >
-            <div class="empty-state">
-                <div class="empty-icon">✈</div>
-                <h3>Finding your tickets...</h3>
-                <p>Please wait a moment.</p>
+        <section id="ticketGrid" class="row g-4 ticket-grid mt-1" aria-live="polite" aria-busy="true">
+            <div class="col-12">
+                <div class="empty-state card card-body text-center">
+                    <div class="empty-icon">{{ page.label|slice:":1" }}</div>
+                    <h3 class="h5">Finding your options...</h3>
+                    <p class="text-secondary mb-0">Please wait a moment.</p>
+                </div>
             </div>
         </section>
 
-        <p id="status" class="status" role="status"></p>
+        <p id="status" class="status text-secondary small" role="status"></p>
 
-        <section class="algorithm-area">
-            <button
-                id="toggleLog"
-                class="log-toggle"
-                type="button"
-                aria-expanded="false"
-                aria-controls="logContainer"
-            >
-                <span>Algorithm demonstration</span>
-                <span id="toggleLogLabel">Show algorithm log ＋</span>
-            </button>
-
-            <div id="logContainer" hidden>
-                <p class="status">
-                    See the steps performed by the C++ algorithm.
-                </p>
-                <pre id="log">Run a search or sort to see the log.</pre>
+        <section class="algorithm-area card border-0 shadow-sm mt-4">
+            <div class="card-body">
+                <button id="toggleLog" class="log-toggle" type="button"
+                    aria-expanded="false" aria-controls="logContainer">
+                    <span>Algorithm demonstration</span>
+                    <span id="toggleLogLabel">Show algorithm log ＋</span>
+                </button>
+                <div id="logContainer" hidden>
+                    <p class="status text-secondary">Django runs the search and sorting algorithms.</p>
+                    <pre id="log" class="mb-0">Run a search or sort to see the log.</pre>
+                </div>
             </div>
         </section>
-    </main>
+    </section>
+</main>
+{% endblock %}
 
-    <footer>
-        <strong>TiketKita</strong>
-        <span> · A student ticket-booking website project</span>
-    </footer>
-</body>
-</html>
+{% block scripts %}
+<script src="{% static 'tickets/script.js' %}" defer></script>
+{% endblock %}
