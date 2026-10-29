@@ -124,7 +124,7 @@ def _linear_search(tickets, origin, destination, provider, mode):
         log.append("No matching tickets found.")
     return matching_indices, log
 
-
+#ticket_api view function to handle sorting and searching tickets
 def ticket_api(request):
     mode = request.GET.get("mode", "flight").strip().lower()
     action = request.GET.get("action", "sort").strip().lower()
